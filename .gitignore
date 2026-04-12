@@ -1,0 +1,15 @@
+# Environment variables — never share API keys or passwords
+.env
+
+# Virtual environment — too large to upload, recreated with pip install
+venv/
+
+# Python cache files — auto-generated, not needed on GitHub
+__pycache__/
+*.pyc
+
+# Data files — too large for GitHub
+data/
+
+# VS Code settings
+.vscode/
