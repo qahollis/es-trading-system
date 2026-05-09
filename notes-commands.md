@@ -8,6 +8,7 @@
 - `ls subfolder\filename` — checks a file inside a subfolder
 - `ls subfolder` — lists all contents of a subfolder
 - `pwd` — Print Working Directory. Shows you exactly where you currently are in the folder structure. Useful when you are lost.
+- `code .` — opens VS Code in the current terminal folder
 
 ## File and Folder Management
 - `mkdir foldername` — Make Directory. Creates a new folder.

@@ -70,7 +70,12 @@ ORDER BY session_type;
 SELECT session_type, COUNT(*)
 FROM volume_profile_levels
 GROUP BY session_type;
-```
+
+-- Verify backfill date range
+SELECT MIN(session_date), MAX(session_date) FROM es_trades;
+
+-- Confirm total row count after load
+SELECT COUNT(*) FROM es_trades;
 
 ## Data Types
 | Type | Use For | Example |

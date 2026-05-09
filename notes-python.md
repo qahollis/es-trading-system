@@ -129,3 +129,8 @@ print(f"Hello {name}, processing {count} files")
 if __name__ == "__main__":
     run_backfill()
 ```
+
+## File Paths
+- Use forward slashes `/` in Python code — works on all operating systems
+- Use backslashes `\` in PowerShell terminal commands
+- Use `r"C:\path\to\file"` (raw string) when you must use backslashes in Python
