@@ -227,3 +227,67 @@ Used in: Project 2 backtest engine.
 Rule of thumb: use the simplest tool that solves the problem.
 Adding Airflow complexity to a simple daily script is like 
 hiring an NFL coaching staff to run a backyard pickup game.
+
+### Backtesting
+Running a trading strategy against historical data to measure its
+performance before risking real money. A backtest answers:
+"If I had followed these rules over the past 5 years, what would
+have happened?"
+
+Key metrics every backtest should output:
+- Win rate: % of trades that hit target before stop
+- Sample size: number of trades — must be large enough to be
+  statistically meaningful (minimum 30, ideally 100+)
+- Average MAE: how far price went against entry on winning trades
+  (tells you if your stop is correctly sized)
+- Average time to target: how long winning trades took to develop
+- Expectancy: (win rate × avg winner) - (loss rate × avg loser)
+  Must be positive for a strategy to be profitable long term
+
+### Confluence
+When two or more levels from different sessions align at or near
+the same price. Example: Previous Day VAL at 5234.75 and Previous
+Overnight POC at 5235.00 — these are stacked within 1 tick.
+Confluence setups tend to produce stronger reactions because more
+traders are watching the same level.
+
+### Parameter Sensitivity Testing
+Testing a backtest with different parameter values to see how 
+sensitive the results are to your choices. Example: testing 
+1-tick, 2-tick, and 3-tick entry tolerances to see which 
+produces the most consistent win rate.
+
+If results change dramatically with small parameter changes 
+the strategy is fragile. If results are stable across a range 
+of parameters the edge is more robust.
+
+### Entry Tolerance (Backtesting)
+The number of ticks price must come within a level to count 
+as a setup. Set too tight — misses valid setups. Set too wide 
+— includes noise. 2 ticks is a reasonable starting point for 
+ES futures volume profile trading.
+
+### Trade Direction at Volume Profile Levels
+Simple rule (starting point):
+- VAH touch → short (rejection from top of value area)
+- POC touch → long (bounce from most accepted price)
+- VAL touch → long (bounce from bottom of value area)
+
+Limitation: direction should also consider broader market 
+context — a POC in a downtrend may be a short entry not long.
+Add directional context analysis as a backtest refinement.
+
+## Git / GitHub
+- `git add .` — stages all changed files for commit
+- `git status` — shows what is staged and what is not
+- `git commit -m "message"` — saves a snapshot with a description
+- `git push` — uploads commits to GitHub
+- `git pull` — downloads latest changes from GitHub to local machine
+- `git log` — shows commit history
+- `git branch` — shows current branch
+
+## Typical End of Session Workflow
+1. git add .
+2. git status  (confirm what is being committed)
+3. git commit -m "description of what you built"
+4. git push
