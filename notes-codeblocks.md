@@ -200,3 +200,89 @@ def do_something(input):
 if __name__ == "__main__":
     result = do_something(input)
     print(result)
+
+    ## The 5 Framework Questions (In Code Order)
+
+1. What tools do I need?
+   → Imports (libraries, functions from other scripts)
+
+2. What settings do those tools need?
+   → Configuration (API keys, DB connections, fixed parameters,
+     constants that do not change during the script's run)
+
+3. What are the steps?
+   → Functions (one function per step, each doing one job)
+
+4. What could go wrong?
+   → Error handling (try/except blocks, if df.empty checks,
+     None guards, duplicate checks)
+
+5. What is my output and how will I know it worked?
+   → Return statements, database writes, print statements,
+     validation queries
+
+## Script Planning Template
+Answer the framework before writing any code.
+Answers become your script skeleton.
+
+### Framework Answers
+1. What tools do I need?
+   imports:
+
+2. What settings do those tools need?
+   configuration:
+
+3. What are the steps?
+   functions needed:
+   -
+   -
+   -
+
+4. What could go wrong?
+   error handling needed:
+   -
+   -
+
+5. What is my output and how will I know it worked?
+   output:
+   validation:
+
+---
+
+### Script Skeleton (write this before any real code)
+
+# ── Imports ────────────────────────────────────────────
+# Q1: What tools do I need?
+
+
+# ── Configuration ──────────────────────────────────────
+# Q1 extended: What settings do those tools need?
+
+
+# ── Functions ──────────────────────────────────────────
+# Q3: What are the steps?
+
+# def step_one(input):
+#     """what this function does"""
+#     # logic here
+#     return output
+
+# def step_two(input):
+#     """what this function does"""
+#     # try/except if this step could fail (Q4)
+#     return output
+
+# ── Main Block ─────────────────────────────────────────
+# Q5: What is my output and how will I know it worked?
+
+# if __name__ == "__main__":
+#     result = step_one()
+#     result = step_two(result)
+#     print(f"Validation: {result}")  # confirm it worked
+
+---
+
+### Step 3 — Fill In the Blocks
+Fill each section using your codeblocks as reference.
+One function at a time. Test each function before moving
+to the next.

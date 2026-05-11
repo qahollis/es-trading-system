@@ -36,3 +36,18 @@
 - `\l` — List all databases.
 - `\c databasename` — Connect to a specific database.
 - `\q` — Quit psql.
+
+## Git / GitHub
+- `git add .` — stages all changed files for commit
+- `git status` — shows what is staged and what is not
+- `git commit -m "message"` — saves a snapshot with a description
+- `git push` — uploads commits to GitHub
+- `git pull` — downloads latest changes from GitHub to local machine
+- `git log` — shows commit history
+- `git branch` — shows current branch
+
+## Typical End of Session Workflow
+1. git add .
+2. git status  (confirm what is being committed)
+3. git commit -m "description of what you built"
+4. git push
