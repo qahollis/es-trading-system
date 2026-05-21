@@ -205,11 +205,17 @@ def scan_session_signals(bars, levels, trade_date_str, session_filter):
         for session_type, session_levels in levels.items():
 
             # Mode 2A: previous_day only
-            # Mode 2B: all session types
             if session_filter == 'previous_day' and session_type != 'previous_day':
                 continue
 
             for level_type, level_price in session_levels.items():
+
+                # Mode 2B: exclude previous_week POC and VAL
+                # Previous week VAH included (83.6% win rate)
+                # Previous week POC excluded (59.7% win rate)
+                # Previous week VAL excluded (78.6% -- borderline)
+                if session_filter == 'all' and session_type == 'previous_week' and level_type in ['poc', 'val']:
+                    continue
 
                 # Only VAH, POC, VAL
                 if level_type not in ['vah', 'poc', 'val']:
@@ -221,7 +227,7 @@ def scan_session_signals(bars, levels, trade_date_str, session_filter):
 
                 # Approach must be bearish
                 approach = get_approach_direction(bars, bar_idx)
-                if approach != 'bearish':
+                if approach not in ['bearish', 'neutral']:
                     continue
 
                 # Cooldown check

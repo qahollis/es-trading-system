@@ -249,5 +249,4 @@ def run_daily_pipeline(trade_date=None):
 
 
 if __name__ == "__main__":
-    # Test with a known trading day
-    run_daily_pipeline("2026-04-22")
+    run_daily_pipeline()
