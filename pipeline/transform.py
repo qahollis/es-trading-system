@@ -69,62 +69,77 @@ def calculate_volume_profile(df, tick_size=0.25):
     """
     Calculates VAH, POC, and VAL from a DataFrame of OHLCV bars.
 
-    How it works:
-    1. Round each bar's close price to the nearest tick
-    2. Sum all volume traded at each price level
-    3. Find the price with most volume — that is the POC
-    4. Expand outward from POC until 70% of volume is captured
-    5. The range covered is the Value Area — top is VAH, bottom is VAL
-
-    tick_size=0.25 because one ES tick = $12.50 (0.25 index points)
+    Volume is distributed evenly across each bar's high-low range
+    matching TradingView's Fixed Range Volume Profile methodology.
+    Each tick within the bar's range receives an equal share of volume.
     """
     if df is None or df.empty:
         return None
 
     df = df.copy()
 
-    # Round close price to nearest tick to create price buckets
-    df['price_bucket'] = (df['close'] / tick_size).round() * tick_size
+    # Build volume profile by distributing each bar's volume
+    # evenly across its high-low price range
+    volume_map = {}
 
-    # Sum volume at each price bucket — this builds the profile
-    profile = df.groupby('price_bucket')['volume'].sum().sort_index()
+    for _, bar in df.iterrows():
+        bar_high   = round(bar['high'] / tick_size) * tick_size
+        bar_low    = round(bar['low']  / tick_size) * tick_size
+        bar_volume = bar['volume']
 
-    if profile.empty:
+        # Count ticks in this bar's range
+        ticks_in_range = round((bar_high - bar_low) / tick_size) + 1
+
+        if ticks_in_range <= 0:
+            ticks_in_range = 1
+
+        volume_per_tick = bar_volume / ticks_in_range
+
+        # Distribute volume across every tick in the range
+        price = bar_low
+        while price <= bar_high + tick_size * 0.01:  # small epsilon for float comparison
+            price_key = round(price / tick_size) * tick_size
+            price_key = round(price_key, 2)
+            volume_map[price_key] = volume_map.get(price_key, 0) + volume_per_tick
+            price += tick_size
+            price = round(price, 2)
+
+    if not volume_map:
         return None
 
-    total_volume = profile.sum()
-    target_volume = total_volume * 0.70  # Value Area = 70% of total volume
+    profile = pd.Series(volume_map).sort_index()
+    total_volume  = profile.sum()
+    target_volume = total_volume * 0.70
 
-    # POC = price level with the highest volume
+    # POC = price with highest volume
     poc = float(profile.idxmax())
 
-    # Expand outward from POC to find Value Area boundaries
-    prices = profile.index.tolist()
-    poc_idx = prices.index(poc)
-    upper = poc_idx
-    lower = poc_idx
+    # Expand outward from POC to capture 70% of volume
+    prices      = profile.index.tolist()
+    poc_idx     = prices.index(poc)
+    upper       = poc_idx
+    lower       = poc_idx
     accumulated = float(profile[poc])
 
     while accumulated < target_volume:
         upper_vol = float(profile[prices[upper + 1]]) if upper + 1 < len(prices) else 0
-        lower_vol = float(profile[prices[lower - 1]]) if lower - 1 >= 0 else 0
+        lower_vol = float(profile[prices[lower - 1]]) if lower - 1 >= 0         else 0
 
         if upper_vol >= lower_vol and upper + 1 < len(prices):
-            upper += 1
+            upper       += 1
             accumulated += upper_vol
         elif lower - 1 >= 0:
-            lower -= 1
+            lower       -= 1
             accumulated += lower_vol
         else:
             break
 
     return {
-        'poc': round(poc, 2),
-        'vah': round(float(prices[upper]), 2),
-        'val': round(float(prices[lower]), 2),
+        'poc':          round(poc, 2),
+        'vah':          round(float(prices[upper]), 2),
+        'val':          round(float(prices[lower]), 2),
         'total_volume': int(total_volume)
     }
-
 # ── Main Transform Function ──────────────────────────────────────────────────
 
 def transform(df, trade_date):
